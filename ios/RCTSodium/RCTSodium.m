@@ -51,7 +51,8 @@ RCT_EXPORT_MODULE();
     @"crypto_sign_PUBLICKEYBYTES": @crypto_sign_PUBLICKEYBYTES,
     @"crypto_sign_SECRETKEYBYTES": @crypto_sign_SECRETKEYBYTES,
     @"crypto_sign_SEEDBYTES": @crypto_sign_SEEDBYTES,
-    @"crypto_sign_BYTES": @crypto_sign_BYTES
+    @"crypto_sign_BYTES": @crypto_sign_BYTES,
+    @"crypto_hash_sha256_BYTES": @crypto_hash_sha256_BYTES
   };
 }
 
@@ -330,5 +331,15 @@ RCT_EXPORT_METHOD(crypto_sign_ed25519_sk_to_curve25519:(NSString*)ed_sk resolve:
   }
 }
 
+RCT_EXPORT_METHOD(crypto_hash_sha256:(NSString *)input resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+{
+  unsigned char output[crypto_hash_sha256_BYTES];
+  const NSData *inputData = [[NSData alloc] initWithBase64EncodedString:input options:0];
+  if (!inputData) reject(ESODIUM,ERR_FAILURE,nil);
+  else {
+    crypto_hash_sha256(output, [inputData bytes], (unsigned long long) inputData.length);
+    resolve([[NSData dataWithBytesNoCopy:output length:sizeof(output) freeWhenDone:NO] base64EncodedStringWithOptions:0]);
+  }
+}
 
 @end
