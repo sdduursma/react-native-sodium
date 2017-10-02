@@ -52,7 +52,9 @@ RCT_EXPORT_MODULE();
     @"crypto_sign_SECRETKEYBYTES": @crypto_sign_SECRETKEYBYTES,
     @"crypto_sign_SEEDBYTES": @crypto_sign_SEEDBYTES,
     @"crypto_sign_BYTES": @crypto_sign_BYTES,
-    @"crypto_hash_sha256_BYTES": @crypto_hash_sha256_BYTES
+    @"crypto_hash_sha256_BYTES": @crypto_hash_sha256_BYTES,
+    @"crypto_box_SEEDBYTES": @crypto_box_SEEDBYTES,
+    @"crypto_pwhash_scryptsalsa208sha256_SALTBYTES": @crypto_pwhash_scryptsalsa208sha256_SALTBYTES
   };
 }
 
@@ -341,5 +343,18 @@ RCT_EXPORT_METHOD(crypto_hash_sha256:(NSString *)input resolve:(RCTPromiseResolv
     resolve([[NSData dataWithBytesNoCopy:output length:sizeof(output) freeWhenDone:NO] base64EncodedStringWithOptions:0]);
   }
 }
+
+// RCT_EXPORT_METHOD(crypto_pwhash_scryptsalsa208sha256:(NSString *)password resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+// {
+//   unsigned char key[crypto_box_SEEDBYTES];
+//
+//   unsigned char salt[crypto_pwhash_scryptsalsa208sha256_SALTBYTES];
+//   randombytes_buf(salt, sizeof(salt));
+//
+//   const NSData *passwordData = [[NSData alloc] initWithBase64EncodedString:password options:0];
+//   if (crypto_pwhash_scryptsalsa208sha256(key, crypto_box_SEEDBYTES, [passwordData bytes], password.length, salt, crypto_pwhash_scryptsalsa208sha256_OPSLIMIT_INTERACTIVE, crypto_pwhash_scryptsalsa208sha256_MEMLIMIT_INTERACTIVE) != 0) {
+//     resolve([[NSData dataWithBytesNoCopy:key length:sizeof(key) freeWhenDone:NO] base64EncodedStringWithOptions:0]);
+//   }
+// }
 
 @end
