@@ -15,6 +15,7 @@ local.properties
 ios/build
 project.xcworkspace
 xcuserdata
+DerivedData/
 
 # OSX
 #
