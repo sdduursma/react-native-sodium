@@ -342,4 +342,15 @@ RCT_EXPORT_METHOD(crypto_hash_sha256:(NSString *)input resolve:(RCTPromiseResolv
   }
 }
 
+RCT_EXPORT_METHOD(crypto_sign_keypair:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+{
+  unsigned char publicKey[crypto_sign_PUBLICKEYBYTES];
+  unsigned char secretKey[crypto_sign_SECRETKEYBYTES];
+  crypto_sign_keypair(publicKey, secretKey);
+  NSString *publicKeyString = [[NSData dataWithBytesNoCopy:publicKey length:sizeof(publicKey) freeWhenDone:NO] base64EncodedStringWithOptions:0];
+  NSString *secretKeyString = [[NSData dataWithBytesNoCopy:secretKey length:sizeof(secretKey) freeWhenDone:NO] base64EncodedStringWithOptions:0];
+  NSDictionary *keyPair = @{@"pk": publicKeyString, @"sk": secretKeyString};
+  resolve(keyPair);
+}
+
 @end
