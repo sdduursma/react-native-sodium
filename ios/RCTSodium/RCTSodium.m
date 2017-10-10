@@ -52,7 +52,10 @@ RCT_EXPORT_MODULE();
     @"crypto_sign_SECRETKEYBYTES": @crypto_sign_SECRETKEYBYTES,
     @"crypto_sign_SEEDBYTES": @crypto_sign_SEEDBYTES,
     @"crypto_sign_BYTES": @crypto_sign_BYTES,
-    @"crypto_hash_sha256_BYTES": @crypto_hash_sha256_BYTES
+    @"crypto_hash_sha256_BYTES": @crypto_hash_sha256_BYTES,
+    @"crypto_pwhash_scryptsalsa208sha256_SALTBYTES": @crypto_pwhash_scryptsalsa208sha256_SALTBYTES,
+    @"crypto_pwhash_scryptsalsa208sha256_OPSLIMIT_INTERACTIVE": @crypto_pwhash_scryptsalsa208sha256_OPSLIMIT_INTERACTIVE,
+    @"crypto_pwhash_scryptsalsa208sha256_MEMLIMIT_INTERACTIVE": @crypto_pwhash_scryptsalsa208sha256_MEMLIMIT_INTERACTIVE
   };
 }
 
@@ -339,6 +342,20 @@ RCT_EXPORT_METHOD(crypto_hash_sha256:(NSString *)input resolve:(RCTPromiseResolv
   else {
     crypto_hash_sha256(output, [inputData bytes], (unsigned long long) inputData.length);
     resolve([[NSData dataWithBytesNoCopy:output length:sizeof(output) freeWhenDone:NO] base64EncodedStringWithOptions:0]);
+  }
+}
+
+RCT_EXPORT_METHOD(crypto_pwhash_scryptsalsa208sha256:(NSUInteger)keyLength password:(NSString *)password salt:(NSString *)salt opsLimit:(NSUInteger)opsLimit memLimit:(NSUInteger)memLimit resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+{
+  unsigned char key[(unsigned long long) keyLength];
+  const NSData *saltData = [[NSData alloc] initWithBase64EncodedString:salt options:0];
+  const NSData *passwordData = [[NSData alloc] initWithBase64EncodedString:password options:0];
+  // TODO: Right way to cast `memLimit`?
+  if (crypto_pwhash_scryptsalsa208sha256(key, sizeof(key), [passwordData bytes], password.length, [saltData bytes], (unsigned long long) opsLimit, (u_int32_t)memLimit) != 0) {
+    // TODO: Reject
+  } else {
+    NSString *result = [[NSData dataWithBytesNoCopy:key length:sizeof(key) freeWhenDone:NO] base64EncodedStringWithOptions:0];
+    resolve(result);
   }
 }
 
