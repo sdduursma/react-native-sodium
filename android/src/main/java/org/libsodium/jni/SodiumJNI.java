@@ -45,4 +45,9 @@ public class SodiumJNI {
 
   public final static native int crypto_hash_sha256_bytes();
   public final static native int crypto_hash_sha256(byte[] out, final byte[] in, final long inlen);
+
+  public final static native int crypto_pwhash_scryptsalsa208sha256_saltbytes();
+  public final static native int crypto_pwhash_scryptsalsa208sha256_opslimit_interactive();
+  public final static native int crypto_pwhash_scryptsalsa208sha256_memlimit_interactive();
+  public final static native int crypto_pwhash_scryptsalsa208sha256(byte[] out, final long outlen, final byte[] passwd, final long passwdlen, final byte[] salt, final long opslimit, final int memlimit);
 }

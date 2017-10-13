@@ -58,6 +58,9 @@ public class RCTSodiumModule extends ReactContextBaseJavaModule {
      constants.put("crypto_sign_SEEDBYTES", Sodium.crypto_sign_seedbytes());
      constants.put("crypto_sign_BYTES", Sodium.crypto_sign_bytes());
      constants.put("crypto_hash_sha256_BYTES", Sodium.crypto_hash_sha256_bytes());
+     constants.put("crypto_pwhash_scryptsalsa208sha256_SALTBYTES", Sodium.crypto_pwhash_scryptsalsa208sha256_saltbytes());
+     constants.put("crypto_pwhash_scryptsalsa208sha256_OPSLIMIT_INTERACTIVE", Sodium.crypto_pwhash_scryptsalsa208sha256_opslimit_interactive());
+     constants.put("crypto_pwhash_scryptsalsa208sha256_MEMLIMIT_INTERACTIVE", Sodium.crypto_pwhash_scryptsalsa208sha256_memlimit_interactive());
      return constants;
   }
 
@@ -479,6 +482,19 @@ public class RCTSodiumModule extends ReactContextBaseJavaModule {
       promise.resolve(Base64.encodeToString(output, Base64.NO_WRAP));
     } catch(Throwable t) {
         promise.reject(ESODIUM,ERR_FAILURE,t);
+    }
+  }
+
+  @ReactMethod
+  public void crypto_pwhash_scryptsalsa208sha256(int keyLength, final String password, final String salt, int opsLimit, int memLimit, Promise promise) {
+    try {
+      byte[] key = new byte[keyLength];
+      byte[] saltBytes = Base64.decode(salt, Base64.NO_WRAP);
+      byte[] passwordBytes = Base64.decode(password, Base64.NO_WRAP);
+      Sodium.crypto_pwhash_scryptsalsa208sha256(key, key.length, passwordBytes, passwordBytes.length, saltBytes, opsLimit, memLimit);
+      promise.resolve(Base64.encodeToString(key, Base64.NO_WRAP));
+    } catch(Throwable t) {
+      promise.reject(ESODIUM, ERR_FAILURE, t);
     }
   }
 }

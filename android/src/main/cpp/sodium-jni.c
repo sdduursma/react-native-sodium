@@ -317,6 +317,31 @@ JNIEXPORT jint JNICALL Java_org_libsodium_jni_SodiumJNI_crypto_1hash_1sha256(JNI
   return (jint)result;
 }
 
+JNIEXPORT jint JNICALL Java_org_libsodium_jni_SodiumJNI_crypto_1pwhash_1scryptsalsa208sha256_1saltbytes(JNIEnv *jenv, jclass jcls) {
+  return (jint) crypto_pwhash_scryptsalsa208sha256_SALTBYTES;
+}
+
+JNIEXPORT jint JNICALL Java_org_libsodium_jni_SodiumJNI_crypto_1pwhash_1scryptsalsa208sha256_1opslimit_1interactive(JNIEnv *jenv, jclass jcls) {
+  return (jint) crypto_pwhash_scryptsalsa208sha256_OPSLIMIT_INTERACTIVE;
+}
+
+JNIEXPORT jint JNICALL Java_org_libsodium_jni_SodiumJNI_crypto_1pwhash_1scryptsalsa208sha256_1memlimit_1interactive(JNIEnv *jenv, jclass jcls) {
+  return (jint) crypto_pwhash_scryptsalsa208sha256_MEMLIMIT_INTERACTIVE;
+}
+
+JNIEXPORT jint JNICALL Java_org_libsodium_jni_SodiumJNI_crypto_1pwhash_1scryptsalsa208sha256(JNIEnv *jenv, jclass jcls, jbyteArray j_out, jlong j_outlen, jbyteArray j_passwd, jlong j_passwdlen, jbyteArray j_salt, jlong j_opslimit, jint j_memlimit) {
+  unsigned char *out = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_out, 0);
+  unsigned char *passwd = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_passwd, 0);
+  unsigned char *salt = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_salt, 0);
+
+  int result = crypto_pwhash_scryptsalsa208sha256(out, (unsigned long long) j_outlen, passwd, (unsigned long long) j_passwdlen, salt, (unsigned long long) j_opslimit, (size_t) j_memlimit);
+
+  (*jenv)->ReleaseByteArrayElements(jenv, j_out, (jbyte *) out, 0);
+  (*jenv)->ReleaseByteArrayElements(jenv, j_passwd, (jbyte *) passwd, 0);
+  (*jenv)->ReleaseByteArrayElements(jenv, j_salt, (jbyte *) salt, 0);
+  return (jint)result;
+}
+
 #ifdef __cplusplus
 }
 #endif
