@@ -450,6 +450,27 @@ public class RCTSodiumModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void crypto_sign_keypair(final Promise promise) {
+    try {
+      int publickeybytes = Sodium.crypto_sign_publickeybytes();
+      int secretkeybytes = Sodium.crypto_sign_secretkeybytes();
+
+      byte[] publicKey = new byte[publickeybytes];
+      byte[] secretKey = new byte[secretkeybytes];
+
+      Sodium.crypto_sign_keypair(publicKey, secretKey);
+
+      WritableNativeMap keyPair = new WritableNativeMap();
+      keyPair.putString("pk", Base64.encodeToString(publicKey, Base64.NO_WRAP));
+      keyPair.putString("sk", Base64.encodeToString(secretKey, Base64.NO_WRAP));
+      promise.resolve(keyPair);
+    }
+    catch(Throwable t) {
+      promise.reject(ESODIUM, ERR_FAILURE, t);
+    }
+  }
+
+  @ReactMethod
   public void crypto_hash_sha256(final String input, Promise promise) {
     try {
       byte[] output = new byte[Sodium.crypto_hash_sha256_bytes()];
