@@ -293,6 +293,21 @@ JNIEXPORT jint JNICALL Java_org_libsodium_jni_SodiumJNI_crypto_1sign_1ed25519_1s
   return (jint)result;
 }
 
+JNIEXPORT jint JNICALL Java_org_libsodium_jni_SodiumJNI_crypto_1hash_1sha256_1bytes(JNIEnv *jenv, jclass jcls) {
+  return (jint) crypto_hash_sha256_BYTES;
+}
+
+JNIEXPORT jint JNICALL Java_org_libsodium_jni_SodiumJNI_crypto_1hash_1sha256(JNIEnv *jenv, jclass jcls, jbyteArray j_out, jbyteArray j_in, jlong j_inlen, jbyteArray j_k) {
+  unsigned char *out = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_out, 0);
+  unsigned char *in = (unsigned char *) (*jenv)->GetByteArrayElements(jenv, j_in, 0);
+
+  int result = crypto_hash_sha256(out,in,(unsigned long long) j_inlen);
+
+  (*jenv)->ReleaseByteArrayElements(jenv, j_out, (jbyte *) out, 0);
+  (*jenv)->ReleaseByteArrayElements(jenv, j_in, (jbyte *) in, 0);
+  return (jint)result;
+}
+
 #ifdef __cplusplus
 }
 #endif

@@ -41,4 +41,7 @@ public class SodiumJNI {
   public final static native int crypto_sign_ed25519_sk_to_seed(byte[] seed, final byte[] sk);
   public final static native int crypto_sign_ed25519_pk_to_curve25519(byte[] curve25519_pk, final byte[] ed25519_pk);
   public final static native int crypto_sign_ed25519_sk_to_curve25519(byte[] curve25519_sk, final byte[] ed25519_sk);
+
+  public final static native int crypto_hash_sha256_bytes();
+  public final static native int crypto_hash_sha256(byte[] out, final byte[] in, final long inlen);
 }

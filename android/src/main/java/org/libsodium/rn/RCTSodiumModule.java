@@ -57,6 +57,7 @@ public class RCTSodiumModule extends ReactContextBaseJavaModule {
      constants.put("crypto_sign_SECRETKEYBYTES", Sodium.crypto_sign_secretkeybytes());
      constants.put("crypto_sign_SEEDBYTES", Sodium.crypto_sign_seedbytes());
      constants.put("crypto_sign_BYTES", Sodium.crypto_sign_bytes());
+     constants.put("crypto_hash_sha256_BYTES", Sodium.crypto_hash_sha256_bytes());
      return constants;
   }
 
@@ -445,6 +446,18 @@ public class RCTSodiumModule extends ReactContextBaseJavaModule {
     }
     catch(Throwable t) {
       p.reject(ESODIUM, ERR_FAILURE, t);
+    }
+  }
+
+  @ReactMethod
+  public void crypto_hash_sha256(final String input, Promise promise) {
+    try {
+      byte[] output = new byte[Sodium.crypto_hash_sha256_bytes()];
+      byte[] inputBytes = Base64.decode(input, Base64.NO_WRAP);
+      Sodium.crypto_hash_sha256(output, inputBytes, inputBytes.length);
+      promise.resolve(Base64.encodeToString(output, Base64.NO_WRAP));
+    } catch(Throwable t) {
+        promise.reject(ESODIUM,ERR_FAILURE,t);
     }
   }
 }
